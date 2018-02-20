@@ -23,11 +23,10 @@ class RK4
 {
     public:
 
-        RK4(uint32_t n/*dimensions, number of degrees-of-freedom*/,
-                STEP tStep, T t_init = 0);
+        RK4(uint32_t n/*dimensions, number of degrees-of-freedom*/, STEP tStep);
         virtual ~RK4(void);
 
-        void go(X *x/*user state*/, T to/*to time*/);
+        void go(X *x/*user state*/, T from, T to/*to time*/);
 
     protected:
 
@@ -43,12 +42,11 @@ class RK4
         uint32_t n; // number of degrees of freedom, 2 for sine wave.
 
         X *k1, *k2, *k3, *k4, *k_2, *k_3, *k_4;
-        T t; // current time
 };
 
 template <class X, class T, class STEP>
-RK4<X, T, STEP>::RK4(uint32_t n_in, STEP tStep_in, T t_init):
-    tStep(tStep_in), n(n_in), t(t_init)
+RK4<X, T, STEP>::RK4(uint32_t n_in, STEP tStep_in):
+    tStep(tStep_in), n(n_in)
 {
     k1 = (X *) malloc(sizeof(X)*n*7);
     if(!k1) throw "malloc() failed";
@@ -70,8 +68,11 @@ RK4<X, T, STEP>::~RK4(void)
     }
 }
 
+// TODO: This interface needs work.  Sometimes we want an array of values
+// out.
+//
 template <class X, class T, class STEP>
-void RK4<X, T, STEP>::go(X *x, T to)
+void RK4<X, T, STEP>::go(X *x, T t, T to)
 {
     // This may not be the most efficient code but it may be easy to
     // follow.

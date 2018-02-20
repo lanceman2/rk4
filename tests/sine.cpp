@@ -46,12 +46,13 @@ void Sin::derivatives(float t, const float *x, float *xDot)
 int main(void)
 {
     float x[2] = { 1.0, 0.0 };
-    float t;
+    float t, fromT;
     Sin sin(1.0F);
 
-    for(t=0.0F; t<10.0F; t += 0.01)
+    for(t=0.0F; t<10.0F;)
     {
-        sin.go(x, t);
+        fromT = t;
+        sin.go(x, fromT, t += 0.01);
         printf("%g %g %g %g\n", t, x[0], x[1], cosf(2.0F*M_PI*t));
 #if 1
         if(sin.getPeriod() > 5.0F)
